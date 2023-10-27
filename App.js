@@ -1,13 +1,15 @@
 
 const express = require('express');
-const path = require('path')
+
+let arrayTareas = require('./listaDeTareas.json');
+
 const app = express();
 
 
-
+//raiz
 app.get('/', (req, res) => {
 
-  res.sendFile(path.join(__dirname + "/listaDeTareas.json" ));
+  res.status(200).send(arrayTareas)
 
 });
 
