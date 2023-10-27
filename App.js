@@ -6,7 +6,7 @@ let arrayTareas = require('./listaDeTareas.json');
 const app = express();
 
 
-//raiz
+// raiz
 app.get('/', (req, res) => {
 
   res.status(200).send(arrayTareas)
