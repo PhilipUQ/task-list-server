@@ -6,6 +6,13 @@ const router = express.Router();
 const fs = require('fs');
 
 
+// requerimos los middlewares
+
+const { middCuerpoVacioPost, middAtributosPost, middCuerpoVacioPut, middAtributosPut,} = require('./middleware');
+
+
+
+
 
 // funcion para cargar tareas desde el archivo listaDeTareas.json
 const cargarArray = () => {
@@ -45,7 +52,7 @@ router.get('/', (req, res) => {
 
 // ruta para crear una nueva tarea
 
-router.post('/', (req, res) =>  {
+router.post('/', middCuerpoVacioPost, middAtributosPost, (req, res) =>  {
 
     console.log("se creara una nueva tarea");
 
@@ -77,7 +84,7 @@ router.post('/', (req, res) =>  {
         res.status(500).send("hubo un porblema al agregar la tarea");
 
     
-      }
+    }
 
 
 
@@ -140,7 +147,7 @@ router.delete('/:id',  (req, res) => {
 
 // ruta para atualizar una tarea
 
-router.put('/:id', (req, res) => {
+router.put('/:id', middCuerpoVacioPut, middAtributosPut, (req, res) => {
 
 
     console.log("se actualizara una tarea");

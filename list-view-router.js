@@ -5,6 +5,11 @@ const router = express.Router();
 
 const fs = require('fs');
 
+const { middValidarParams } = require('./middleware');
+
+
+
+router.use(middValidarParams);
 
 
 // funcion para cargar tareas desde el archivo listaDeTareas.json

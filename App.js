@@ -7,6 +7,8 @@ const listEditRouter = require('./list-edit-router');
 
 const listViewRouter = require('./list-view-router');
 
+const { validarMetodoHttp } = require('./middleware');
+
 
 
 const app = express();
@@ -14,6 +16,8 @@ const app = express();
 
 
 app.use(express.json()); 
+
+app.use(validarMetodoHttp);
 
 
 
