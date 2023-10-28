@@ -2,12 +2,19 @@ metodo de uso
 
 se corre el servidor usando npm run start, donde correra con nodemon
 
-la ruta raiz (localHost:3000) imprimira el archivo listaDeTareas.json
+la ruta POST /login al ingresar el usuario y la contraseña devolverá una token el cual se usara para entrar a la rutaProtegida:
 
-para FILTAR las tareas se debe usar la ruta (/filtro) seguido de si se requiere las tareas completas (/filtro/completas) o las tareas incompletas (/filtro/incompletas)
+    {
+    "user":"user321",
+    "password":"pass321"
+    }
 
-para EDITAR tareas se debe usar la ruta (/editar):
 
+-----------------------------------------------------------------------
+
+una vez tengamos el token, debemos cambiar a la ruta GET /rutaProtegida, abriremos la pestaña Header y activaremos (Authorization).
+
+En frente de Authorization ingresaremos el token, el cual, si es valido, nos dará acceso a la /rutaProtegida
 
 -------------------------- agregar tarea ------------------------------
 
