@@ -35,7 +35,7 @@ function validarAtributos(body) {
     return { valido: true };
 
 
-}
+};
 
 
 
@@ -53,7 +53,8 @@ function middCuerpoVacioPost (req, res, next) {
     if (validarCuerpoVacio(req)) {
 
         return res.status(400).send("cuerpo de la solicitud esta vacio");
-      }
+
+    }
     
 
     next();
@@ -77,6 +78,7 @@ function middAtributosPost(req, res, next) {
 
         if (req.method === "POST") {
 
+
             const validacion = validarAtributos(req.body);
 
             if (!validacion.valido) {
@@ -85,7 +87,9 @@ function middAtributosPost(req, res, next) {
 
             return;
 
+
             }
+
         }
 
         next();
@@ -104,7 +108,7 @@ function middAtributosPost(req, res, next) {
 
       
 
-}    
+};    
       
       
 
@@ -119,7 +123,8 @@ function middCuerpoVacioPut (req, res, next) {
     if (validarCuerpoVacio(req)) {
 
         return res.status(400).send("cuerpo de la solicitud esta vacio");
-      }
+
+    }
     
 
       next();
@@ -143,15 +148,18 @@ function middAtributosPut(req, res, next) {
 
         if (req.method === "PUT") {
 
+
             const validacion = validarAtributos(req.body);
 
             if (!validacion.valido) {
 
             res.status(400).send(validacion.mensaje);
-
+            
             return;
 
+
             }
+
         }
 
         next();
@@ -170,7 +178,7 @@ function middAtributosPut(req, res, next) {
 
       
 
-}    
+};   
 
 
 
@@ -195,7 +203,7 @@ function validarMetodoHttp(req, res, next) {
 
     }
 
-  }
+};
 
 
 
@@ -207,7 +215,7 @@ function middValidarParams(req, res, next) {
 
 
     console.log("validando el parametro ingresado desde middleware list-view-router");
-    
+
   
     // se hace un split de la url para sacar el estado 
     const ruta = req.path.split('/');
@@ -231,7 +239,7 @@ function middValidarParams(req, res, next) {
 
 
     }
-  }
+};
   
   
 
