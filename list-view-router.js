@@ -13,7 +13,7 @@ const cargarArray = () => {
 
     console.log("cargando array de tareas desde list-view-router");
 
-    return JSON.parse(fs.readFileSync("./listaDeTareas.json", "utf8"));
+    return JSON.parse(fs.readFileSync('./listaDeTareas.json', 'utf8'));
     
   };
 

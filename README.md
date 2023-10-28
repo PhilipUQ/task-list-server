@@ -22,7 +22,7 @@ antes mandar la ruta en el body agregamos la nueva tarea como un JSON
 
     {
         "id": "123456",
-        "isComplete": false,
+        "isCompleted": false,
         "description": "jugar ping pong" 
     }
 
@@ -54,7 +54,7 @@ antes mandar la ruta, en el body modificamos los parametros que queramos actuali
 
     {
         "id": "7890",
-        "isComplete": true,
+        "isCompleted": true,
         "description": "jugar ping pong, mañana mejor" 
     }
 
