@@ -3,36 +3,66 @@ const express = require('express');
 
 const router = express.Router();
 
-let arrayListaTareas = require('./listaDeTareas.json');
+const fs = require('fs');
 
 
 
+// funcion para cargar tareas desde el archivo listaDeTareas.json
 
-//filtro de tareas "completas" e "incompletas"
-router.get('/:estado', (req, res) => {
+const cargarArray = () => {
 
-    const estadoTareas = req.params.estado; 
+    console.log("cargando array de tareas desde list-view-router");
 
-    console.log("filtrando tareas");
+    return JSON.parse(fs.readFileSync("./listaDeTareas.json", "utf8"));
     
-    const tareasFiltradas = arrayListaTareas.filter(tareas => {
+  };
 
-        return estadoTareas === "completas" ? tareas.isCompleted : !tareas.isCompleted; // al usar el string "completas" en parametro nos filtra las tareas completas, de lo contrario las incompletas
 
-    });
 
-    res.json(tareasFiltradas);
+// se filtran las tareas por estado
 
-    console.log("visualizando tareas filtradas");
+let filtroTareasPorEstado = (estado) => {
+
+    let arrayTareasActuales = cargarArray(); // se cargan las tareas cada vez que se llama la funcion
+
+    return arrayTareasActuales.filter(tarea => tarea.isCompleted ===  estado);
+
+
+};
+
+
+
+
+// Ruta para tareas completas
+
+router.get('/completas', (req, res) => {
+
+  
+    let tareasCompletas = filtroTareasPorEstado(true); // se obtienen la tareas con isComplete: true obtener las tareas completas
+    
+    res.json(tareasCompletas);
+
+
+});
+
+
+
+
+// Ruta para tareas incompletas
+
+router.get('/incompletas', (req, res) => {
+
+  
+    let tareasIncompletas = filtroTareasPorEstado(false);  // se obtienen la tareas con isComplete: false obtener las tareas incompletas
+    
+    res.json(tareasIncompletas);
+
 
 });
 
 
 
 module.exports = router;
-
-// mas adelante se implementara una validacion para solo escribir "completas" o "incompletas" en el parametro 
-
 
 
 
