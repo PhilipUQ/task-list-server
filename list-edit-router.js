@@ -10,11 +10,12 @@ const fs = require('fs');
 // funcion para cargar tareas desde el archivo listaDeTareas.json
 const cargarArray = () => {
 
+
     console.log("cargando array desde list-edit-router.js");
 
     return JSON.parse(fs.readFileSync('./listaDeTareas.json', 'utf8'));
 
-  };
+};
 
 
 
@@ -26,7 +27,7 @@ const guardarEnArray = (tareas) => {
     fs.writeFileSync('./listaDeTareas.json', JSON.stringify(tareas));
 
 
-  };
+};
 
 
 
