@@ -14,7 +14,7 @@ const cargarArray = () => {
 
     return JSON.parse(fs.readFileSync('./listaDeTareas.json', 'utf8'));
 
-  };
+};
 
 
 
@@ -26,7 +26,7 @@ const guardarEnArray = (tareas) => {
     fs.writeFileSync('./listaDeTareas.json', JSON.stringify(tareas));
 
 
-  };
+};
 
 
 
@@ -76,7 +76,7 @@ router.post('/', (req, res) =>  {
         res.status(500).send("hubo un porblema al agregar la tarea");
 
     
-      }
+    }
 
 
 

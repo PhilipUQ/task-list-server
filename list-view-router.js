@@ -15,7 +15,7 @@ const cargarArray = () => {
 
     return JSON.parse(fs.readFileSync('./listaDeTareas.json', 'utf8'));
     
-  };
+};
 
 
 
