@@ -40,272 +40,166 @@ let arrayTareasApi = [
 ] 
 
 
+// middleware para encontrar una tarea por su id a traves de un bucle for, esto ayudara que sea mas optimo el REST API evitara que tenga que hacer varias iteraciones y saturar el servidor
 
+const middEncontrarTarea = (req, res, next) => {
 
+    console.log("buscando id de tarea desde middleware");
 
-// funcion utilitaria para encontrar tarea por id
+    let tareaId = req.params.id;
 
-const encontrarTareaPorId = (id) => {
+    let tarea = null;
 
-    console.log("buscando tarea por id");
+  
+    for (let t of arrayTareasApi) {
+    
 
+        if (t.id === tareaId) {
 
-    for (let tarea of arrayTareasApi)  {
+            tarea = t;
 
-        if (tarea.id === id) {
-
-            return tarea;
-
+            break;
 
         }
 
     }
 
+    if (tarea) {
 
-    return null;
+        req.tareaEncontrada = tarea;
 
-}
+        next();
+
+    } else {
+
+        res.status(404).json({ msg: "Tarea no encontrada" });
+
+    }
+
+  };
 
 
 
 
 
+  // middleware para filtrar tareas completas e incompletas ya que cada endpoint debe estar separado
 
-// agregar tareas
+  const middFiltrarTareas = (completadas) => (req, res, next) => {
+    
 
-app.post('/tareas', (req, res) => {
+    console.log(`filtrando tareas ${completadas ? 'completadas' : 'incompletas' }`);
 
-    console.log("agregando tarea")
+    req.tareasFiltradas = arrayTareasApi.filter(tarea => tarea.isCompleted === completadas);
+
+    next();
+
+
+  };
+  
+
+
+
+  
+  // metodo POST agregar una tarea
+
+  app.post('/tareas', (req, res) => {
+
+
+    console.log("Agregando tarea");
 
     try {
 
-        let nuevaTarea = req.body;
+        const nuevaTarea = req.body;
 
         arrayTareasApi.push(nuevaTarea);
 
-        res.status(201).json({ msg: "tarea creada con exito", data: nuevaTarea });
+        res.status(201).json({ message: "nueva tarea creada", data: nuevaTarea });
 
 
-    } catch (err) {
+    } catch (error) {
 
-        console.log("algo salio mal ", err);
+        console.log("algo salio mal ", error);
 
         res.status(500).json({ msg: "error al agregar tarea" });
 
     }
 
 
-});
+  });
 
 
 
-// listar todas la tareas 
+  
+  // metodo GET para mostrar todo el array de tareas
 
-app.get('/tareas', (req, res) => {
+  app.get('/tareas', (req, res) => {
 
-    console.log("listando todas las tareas")
+    console.log("listadoando todas las tareas");
 
-    try {
+    res.status(200).json({ msg: "exitoso", data: arrayTareasApi });
 
-        res.status(200).json({ msg: "exitoso", data: arrayTareasApi });
+  });
+  
 
 
-    } catch (err) {
+  
+  // metodo GET para filtrar solo las tareas completas 
 
-        console.log("algo salio mal ", err);
+  app.get('/tareas/completas', middFiltrarTareas(true), (req, res) => { 
 
-        res.status(500).json({ msg: "erro al hacer el listado" });
+    res.status(200).json({ msg: "exitoso", data: req.tareasFiltradas });
 
-    }
+  });
 
 
-});
 
+  
+  // metodo GET para filtrar solo las tareas incompletas 
 
+  app.get('/tareas/incompletas', middFiltrarTareas(false), (req, res) => {
 
+    res.status(200).json({ msg: "exitoso", data: req.tareasFiltradas });
 
+  });
+  
 
 
 
-// filtrar tareas completas 
 
-app.get('/tareas/completas', (req, res) => {
+  // metodo GET para filtrar solo una tarea especifica
 
-    console.log("filtrando tareas completas")
+  app.get('/tareas/:id', middEncontrarTarea, (req, res) => {
 
+    res.status(200).json({ msg: "exitoso", data: req.tareaEncontrada });
 
-    try {
+  });
+  
 
-        let tareasCompletas = arrayTareasApi.filter(tarea => tarea.isCompleted);
 
-        res.status(200).json({ msg: "exitoso", data: tareasCompletas });
+  // metodo PUT para actualizar uan tarea existente
 
+  app.put('/tareas/:id', middEncontrarTarea, (req, res) => {
 
-    } catch (err) {
+    Object.assign(req.tareaEncontrada, req.body);
 
+    res.status(200).json({ msg: "tarea actualizada con exito", data: req.tareaEncontrada });
 
-        console.log("algo salio mal", err);
+  });
 
-        res.status(500).json({ msg: "error al filtrar tareas completas" });
 
-    }
+  
+  // metodo DELETE para borrar uan tarea existente
 
-});
+  app.delete('/tareas/:id', middEncontrarTarea, (req, res) => {
 
+    const indexTarea = arrayTareasApi.indexOf(req.tareaEncontrada);
 
+    arrayTareasApi.splice(indexTarea,  1);
 
-// filtrar tareas incompletas 
+    res.status(200).json({ msg: "eliminado con exito" });
 
-app.get('/tareas/incompletas', (req, res) => {
 
-    console.log("filtrando tareas incompletas")
-
-
-    try {
-
-        let tareasIncompletas = arrayTareasApi.filter(tarea => !tarea.isCompleted);
-
-        res.status(200).json({ msg: "exitoso", data: tareasIncompletas });
-
-
-    } catch (err) {
-
-        console.log("algo salio mal", err);
-
-        res.status(500).json({ msg: "error al filtrar tareas incompletas" });
-
-    }
-
-});
-
-
-
-
-// filtrar una sola tarea
-
-app.get('/tareas/:id', (req, res) => {
-
-    try {
-
-        let tareaId = req.params.id;
-
-        let tarea = encontrarTareaPorId(tareaId);
-        
-        
-        if (tarea) {
-
-            res.status(200).json({ msg: "exitoso", data: tarea });
-
-        } else {
-
-            res.status(404).json({ msg: "tarea no encontrada" });
-
-
-        }
-
-
-    } catch (err) {
-
-        console.log("algo salio mal", err);
-
-        res.status(500).json({ msg: "error al obtener una tarea" });
-
-    }
-
-
-});
-
-
-
-
-// actualizar tareas
-
-app.put('/tareas/:id', (req, res) => {
-
-    console.log("se actualizara una tarea");
-
-    try {
-
-        let tareaId = req.params.id;
-
-        let tareaActualizada = null;
-
-        arrayTareasApi.map(tarea => {
-
-
-            if (tarea.id === tareaId) {
-
-                Object.assign(tarea, req.body);
-
-                tareaActualizada = tarea;
-            }
-
-
-        });
-
-
-        if (tareaActualizada) {
-            
-            res.status(200).json({ msg: "tarea actualizada con exito", data: tareaActualizada });
-
-        } else {
-
-            res.status(404).json({ msg: "tarea ni encontrada" });
-
-        }
-
-    } catch (err) {
-
-        console.log("algo salio mal", err);
-
-        res.status(500).json({ msg: "error al actualizar la tarea"});
-
-    }
-
-
-});
-
-
-
-
-// eliminar tareas
-
-app.delete('/tareas/:id', (req, res) => {
-
-    console.log("se eliminara una tarea" )
-
-    try {
-
-        let tareaId = req.params.id;
-
-        let indexTarea = arrayTareasApi.findIndex(tarea => tarea.id === tareaId);
-
-        if (indexTarea > -1) {
-
-            arrayTareasApi.splice(indexTarea, 1);
-
-            res.status(200).json({ msg: "eliminado con exito" });
-
-        } else {
-
-            res.status(404).json({ msg: "tarea no encontrada" });
-
-        }
-    } catch (err) {
-
-        console.log("algo salio mal", err);
-
-        res.status(500).json({ msg: "error al intentar actualizar la tarea" });
-
-    }
-
-
-});
-
-
-
-
-
+  });
 
 
 

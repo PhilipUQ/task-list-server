@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon listaTareasRestApi.js"
+    "startAPI": "nodemon listaTareasRestApi.js",
+    "startJWT": "nodemon App.js"
+
   },
   "author": "",
   "license": "ISC",
